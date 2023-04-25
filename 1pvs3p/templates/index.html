@@ -21,7 +21,7 @@
       $("#calc-form").submit(function(event) {
         event.preventDefault();
         const formData = $(this).serialize();
-        $.post("/calculate", formData, function(response) {
+        $.post("https://reports.e-comas.com/1pvs3p/calculate", formData, function(response) {
           if (response.error) {
             $("#result").html(`<p>${response.error}</p>`);
           } else {
