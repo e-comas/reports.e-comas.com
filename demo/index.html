@@ -26,15 +26,16 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #reportFrame {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             border: none;
+            width: 1920px;  /* Original report width */
+            height: 2160px; /* Original report height */
+            transform-origin: center center;
         }
     </style>
 </head>
@@ -49,80 +50,45 @@
     </div>
 
     <script>
-        function logDimensions(event) {
-            const iframe = document.getElementById('reportFrame');
-            const container = document.querySelector('.report-container');
-            console.log(`Event: ${event}`);
-            console.log('Window dimensions:', {
-                innerWidth: window.innerWidth,
-                innerHeight: window.innerHeight,
-                outerWidth: window.outerWidth,
-                outerHeight: window.outerHeight
-            });
-            console.log('Container dimensions:', {
-                offsetWidth: container.offsetWidth,
-                offsetHeight: container.offsetHeight,
-                clientWidth: container.clientWidth,
-                clientHeight: container.clientHeight,
-                scrollWidth: container.scrollWidth,
-                scrollHeight: container.scrollHeight
-            });
-            console.log('IFrame dimensions:', {
-                offsetWidth: iframe.offsetWidth,
-                offsetHeight: iframe.offsetHeight,
-                clientWidth: iframe.clientWidth,
-                clientHeight: iframe.clientHeight,
-                scrollWidth: iframe.scrollWidth,
-                scrollHeight: iframe.scrollHeight
-            });
-            console.log('Document dimensions:', {
-                scrollWidth: document.documentElement.scrollWidth,
-                scrollHeight: document.documentElement.scrollHeight,
-                clientWidth: document.documentElement.clientWidth,
-                clientHeight: document.documentElement.clientHeight
-            });
-            console.log('Computed styles:', {
-                iframeWidth: window.getComputedStyle(iframe).width,
-                iframeHeight: window.getComputedStyle(iframe).height,
-                containerWidth: window.getComputedStyle(container).width,
-                containerHeight: window.getComputedStyle(container).height
-            });
-        }
-
         function resizeReport() {
+            const container = document.querySelector('.report-container');
             const iframe = document.getElementById('reportFrame');
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            logDimensions('resize');
+            
+            // Get container dimensions
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            
+            // Calculate scale factors for both dimensions
+            const scaleX = containerWidth / 1920;
+            const scaleY = containerHeight / 2160;
+            
+            // Use the smaller scale factor to ensure entire report fits
+            const scale = Math.min(scaleX, scaleY);
+            
+            // Apply the transform
+            iframe.style.transform = `scale(${scale})`;
+            
+            console.log('Scaling:', {
+                containerWidth,
+                containerHeight,
+                scaleX,
+                scaleY,
+                finalScale: scale
+            });
         }
 
-        // Log initial page load
-        window.addEventListener('load', () => {
-            logDimensions('initial load');
-            resizeReport();
-        });
+        // Initial resize
+        window.addEventListener('load', resizeReport);
         
-        // Log after a short delay to catch Power BI loading
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                logDimensions('after 1 second');
-            }, 1000);
-        });
-
-        // Handle window resizing with logging
+        // Handle window resizing
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                resizeReport();
-                logDimensions('after resize');
-            }, 100);
+            resizeTimeout = setTimeout(resizeReport, 100);
         });
 
-        // Log iframe load completion
-        document.getElementById('reportFrame').addEventListener('load', () => {
-            logDimensions('iframe loaded');
-        });
+        // Handle orientation changes
+        window.addEventListener('orientationchange', resizeReport);
     </script>
 </body>
 </html>
