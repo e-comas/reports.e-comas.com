@@ -12,28 +12,24 @@
             padding: 0;
         }
 
-        html {
+        html, body {
             height: 100%;
             width: 100%;
             margin: 0;
             padding: 0;
-        }
-
-        body {
-            height: 100%;
-            width: 100vw;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            overflow-y: scroll;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
-            scroll-behavior: smooth; /* Smooth scroll on modern browsers */
+            overflow: hidden; /* Prevent browser scrolling */
         }
 
         .report-container {
-            position: relative;
-            width: 100vw;
-            overflow: hidden; /* Prevent any scrolling on container */
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-x: hidden;
+            overflow-y: auto; /* Only container scrolls */
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
         }
 
         #reportFrame {
@@ -45,7 +41,6 @@
             border: none;
             transform-origin: top left;
             -webkit-transform-origin: top left;
-            display: block;
         }
     </style>
 </head>
@@ -64,28 +59,25 @@
             const container = document.querySelector('.report-container');
             const iframe = document.getElementById('reportFrame');
             
-            // Calculate scale to fit width exactly
-            const scale = document.documentElement.clientWidth / 1920;
+            // Calculate scale based on container width
+            const scale = container.clientWidth / 1920;
             
             // Apply transform
             iframe.style.transform = `scale(${scale})`;
             iframe.style.webkitTransform = `scale(${scale})`; // For Safari
             
-            // Set container height to match scaled content height plus a small buffer
+            // Set minimum height on container to ensure proper scrolling
             const scaledHeight = Math.ceil(2160 * scale);
-            container.style.height = `${scaledHeight}px`;
+            iframe.style.height = `${2160}px`; // Keep original height
             
-            // Log dimensions for debugging
-            console.log('Dimensions:', {
-                windowWidth: document.documentElement.clientWidth,
-                scale,
-                scaledHeight,
+            console.log('Setup:', {
                 containerWidth: container.clientWidth,
-                bodyWidth: document.body.clientWidth
+                scale,
+                scaledHeight
             });
         }
 
-        // Call resize after iframe loads
+        // Call resize when iframe loads
         document.getElementById('reportFrame').addEventListener('load', resizeReport);
         
         // Initial resize
@@ -95,14 +87,7 @@
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                resizeReport();
-            }, 100);
-        });
-
-        // Force resize on orientation change
-        window.addEventListener('orientationchange', () => {
-            setTimeout(resizeReport, 100);
+            resizeTimeout = setTimeout(resizeReport, 100);
         });
     </script>
 </body>
