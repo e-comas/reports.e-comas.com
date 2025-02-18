@@ -13,25 +13,27 @@
         }
 
         html {
-            width: 100%;
             height: 100%;
+            width: 100%;
             margin: 0;
             padding: 0;
         }
 
         body {
-            width: 100%;
+            height: 100%;
+            width: 100vw;
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-            overflow-y: auto;   /* Allow vertical scroll */
+            overflow-x: hidden;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            scroll-behavior: smooth; /* Smooth scroll on modern browsers */
         }
 
         .report-container {
-            position: relative;  /* Changed from fixed to relative */
-            width: 100%;
-            overflow-x: hidden;
-            overflow-y: visible;
+            position: relative;
+            width: 100vw;
+            overflow: hidden; /* Prevent any scrolling on container */
         }
 
         #reportFrame {
@@ -42,6 +44,8 @@
             height: 2160px;
             border: none;
             transform-origin: top left;
+            -webkit-transform-origin: top left;
+            display: block;
         }
     </style>
 </head>
@@ -60,33 +64,45 @@
             const container = document.querySelector('.report-container');
             const iframe = document.getElementById('reportFrame');
             
-            // Calculate scale to fit width
-            const scale = window.innerWidth / 1920;
+            // Calculate scale to fit width exactly
+            const scale = document.documentElement.clientWidth / 1920;
             
-            // Apply transform with scale from top-left
+            // Apply transform
             iframe.style.transform = `scale(${scale})`;
+            iframe.style.webkitTransform = `scale(${scale})`; // For Safari
             
-            // Set container height to match scaled content
-            container.style.height = `${2160 * scale}px`;
+            // Set container height to match scaled content height plus a small buffer
+            const scaledHeight = Math.ceil(2160 * scale);
+            container.style.height = `${scaledHeight}px`;
             
-            console.log('Report setup:', {
-                windowWidth: window.innerWidth,
+            // Log dimensions for debugging
+            console.log('Dimensions:', {
+                windowWidth: document.documentElement.clientWidth,
                 scale,
-                scaledHeight: 2160 * scale
+                scaledHeight,
+                containerWidth: container.clientWidth,
+                bodyWidth: document.body.clientWidth
             });
         }
 
-        // Ensure we resize after the iframe loads
+        // Call resize after iframe loads
         document.getElementById('reportFrame').addEventListener('load', resizeReport);
         
         // Initial resize
         window.addEventListener('load', resizeReport);
         
-        // Handle window resizing with debounce
+        // Debounced resize handler
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(resizeReport, 100);
+            resizeTimeout = setTimeout(() => {
+                resizeReport();
+            }, 100);
+        });
+
+        // Force resize on orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(resizeReport, 100);
         });
     </script>
 </body>
