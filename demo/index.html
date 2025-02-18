@@ -24,20 +24,19 @@
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100vw;
+            height: 100vh;
             overflow: hidden;
-            background: white;
         }
 
         #reportFrame {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 1920px;
-            height: 2160px;
+            top: 0;          /* Align with top as per Power BI settings */
+            left: 0;
+            width: 1920px;   /* Exact width from Power BI canvas */
+            height: 2160px;  /* Exact height from Power BI canvas */
             border: none;
-            transform-origin: 0 0;
+            transform-origin: top left;  /* Match top alignment */
         }
     </style>
 </head>
@@ -60,30 +59,23 @@
             const containerWidth = container.clientWidth;
             const containerHeight = container.clientHeight;
             
-            // Calculate scale factors
-            const scaleX = containerWidth / 1920;
-            const scaleY = containerHeight / 2160;
-            const scale = Math.min(scaleX, scaleY);
+            // Calculate scale to fit width
+            const scale = containerWidth / 1920;
             
-            // Calculate centering offsets
-            const translateX = (containerWidth - (1920 * scale)) / 2;
-            const translateY = (containerHeight - (2160 * scale)) / 2;
+            // Apply transform with scale from top-left
+            iframe.style.transform = `scale(${scale})`;
             
-            // Apply transform with both scale and translation
-            iframe.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-            
-            console.log('Viewport setup:', {
+            console.log('Canvas setup:', {
                 containerWidth,
                 containerHeight,
                 scale,
-                translateX,
-                translateY
+                iframeWidth: 1920,
+                iframeHeight: 2160
             });
         }
 
-        // Ensure resize happens after iframe loads
-        const iframe = document.getElementById('reportFrame');
-        iframe.addEventListener('load', resizeReport);
+        // Ensure we resize after the iframe loads
+        document.getElementById('reportFrame').addEventListener('load', resizeReport);
         
         // Initial resize
         window.addEventListener('load', resizeReport);
@@ -93,11 +85,6 @@
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(resizeReport, 100);
-        });
-
-        // Additional event listener for orientation changes
-        window.addEventListener('orientationchange', () => {
-            setTimeout(resizeReport, 100);
         });
     </script>
 </body>
