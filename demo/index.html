@@ -13,29 +13,31 @@
         }
 
         html, body {
-            height: 100vh;
-            width: 100vw;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
             overflow: hidden;
-            position: fixed;
         }
 
         .report-container {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: white;
         }
 
         #reportFrame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1920px;
+            height: 2160px;
             border: none;
-            width: 1920px;  /* Original report width */
-            height: 2160px; /* Original report height */
-            transform-origin: center center;
+            transform-origin: 0 0;
         }
     </style>
 </head>
@@ -58,37 +60,45 @@
             const containerWidth = container.clientWidth;
             const containerHeight = container.clientHeight;
             
-            // Calculate scale factors for both dimensions
+            // Calculate scale factors
             const scaleX = containerWidth / 1920;
             const scaleY = containerHeight / 2160;
-            
-            // Use the smaller scale factor to ensure entire report fits
             const scale = Math.min(scaleX, scaleY);
             
-            // Apply the transform
-            iframe.style.transform = `scale(${scale})`;
+            // Calculate centering offsets
+            const translateX = (containerWidth - (1920 * scale)) / 2;
+            const translateY = (containerHeight - (2160 * scale)) / 2;
             
-            console.log('Scaling:', {
+            // Apply transform with both scale and translation
+            iframe.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            
+            console.log('Viewport setup:', {
                 containerWidth,
                 containerHeight,
-                scaleX,
-                scaleY,
-                finalScale: scale
+                scale,
+                translateX,
+                translateY
             });
         }
 
+        // Ensure resize happens after iframe loads
+        const iframe = document.getElementById('reportFrame');
+        iframe.addEventListener('load', resizeReport);
+        
         // Initial resize
         window.addEventListener('load', resizeReport);
         
-        // Handle window resizing
+        // Handle window resizing with debounce
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(resizeReport, 100);
         });
 
-        // Handle orientation changes
-        window.addEventListener('orientationchange', resizeReport);
+        // Additional event listener for orientation changes
+        window.addEventListener('orientationchange', () => {
+            setTimeout(resizeReport, 100);
+        });
     </script>
 </body>
 </html>
