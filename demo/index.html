@@ -1,24 +1,96 @@
-
 <!DOCTYPE html>
 <html>
-<script>
-  console.log("Inline script executing");
-</script>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>e-Comas Amazon Analytics</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="/fullsize-v2.js" defer async></script>
+    <title>e-Comas Amazon Analytics</title>
+    <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.min.js"></script>
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        background: #f5f5f5;
+      }
+      #reportContainer {
+        width: 100vw;
+        height: 100vh;
+      }
+      .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+      }
+      .loading-logo {
+        width: 200px;
+        height: auto;
+      }
+    </style>
   </head>
-  <body style="padding: 0; margin: 0">
-    <iframe
-      title="e-Comas_Amazon_Analytics_SC_Production"
-      width="1140"
-      height="541.25"
-      src="https://app.powerbi.com/reportEmbed?reportId=5adb444e-14b5-4e35-9754-bd55d0655d66&autoAuth=true&ctid=88b08c41-7f51-4657-9b4a-f8e49a08313e"
-      frameborder="0"
-      allowfullscreen="true"
-    ></iframe>
+  <body>
+    <!-- Loading Screen with e-Comas Logo -->
+    <div class="loading-container">
+      <svg class="loading-logo" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20,10 h160 a10,10 0 0 1 10,10 v10 a10,10 0 0 1 -10,10 h-160 a10,10 0 0 1 -10,-10 v-10 a10,10 0 0 1 10,-10 z" 
+              fill="#48E5C2"/>
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+              fill="#fff" style="font-family: Arial, sans-serif; font-size: 20px;">
+          e-Comas
+        </text>
+      </svg>
+    </div>
+    
+    <div id="reportContainer"></div>
+
+    <script>
+      // Create base64 image URL from the SVG for PowerBI
+      const svgElement = document.querySelector('.loading-logo');
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const svgBase64 = btoa(svgString);
+      const logoUrl = `data:image/svg+xml;base64,${svgBase64}`;
+
+      // Configure PowerBI report
+      const reportContainer = document.getElementById('reportContainer');
+      const config = {
+        type: 'report',
+        tokenType: 'Embed',
+        embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=5adb444e-14b5-4e35-9754-bd55d0655d66&autoAuth=true&ctid=88b08c41-7f51-4657-9b4a-f8e49a08313e',
+        settings: {
+          customLayout: {
+            displayOption: powerbi.models.DisplayOption.FitToWidth
+          },
+          background: powerbi.models.BackgroundType.Transparent,
+          loadingLogoCustom: {
+            imageUrl: logoUrl,
+            width: 200,
+            height: 50
+          }
+        }
+      };
+
+      // Embed the report
+      const report = powerbi.embed(reportContainer, config);
+
+      // Remove loading screen once report is loaded
+      report.on('loaded', function() {
+        document.querySelector('.loading-container').style.display = 'none';
+      });
+
+      // Handle window resize
+      function resizeReport() {
+        reportContainer.style.width = window.innerWidth + 'px';
+        reportContainer.style.height = window.innerHeight + 'px';
+      }
+
+      window.addEventListener('resize', resizeReport);
+      resizeReport();
+    </script>
   </body>
 </html>
