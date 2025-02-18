@@ -49,24 +49,80 @@
     </div>
 
     <script>
+        function logDimensions(event) {
+            const iframe = document.getElementById('reportFrame');
+            const container = document.querySelector('.report-container');
+            console.log(`Event: ${event}`);
+            console.log('Window dimensions:', {
+                innerWidth: window.innerWidth,
+                innerHeight: window.innerHeight,
+                outerWidth: window.outerWidth,
+                outerHeight: window.outerHeight
+            });
+            console.log('Container dimensions:', {
+                offsetWidth: container.offsetWidth,
+                offsetHeight: container.offsetHeight,
+                clientWidth: container.clientWidth,
+                clientHeight: container.clientHeight,
+                scrollWidth: container.scrollWidth,
+                scrollHeight: container.scrollHeight
+            });
+            console.log('IFrame dimensions:', {
+                offsetWidth: iframe.offsetWidth,
+                offsetHeight: iframe.offsetHeight,
+                clientWidth: iframe.clientWidth,
+                clientHeight: iframe.clientHeight,
+                scrollWidth: iframe.scrollWidth,
+                scrollHeight: iframe.scrollHeight
+            });
+            console.log('Document dimensions:', {
+                scrollWidth: document.documentElement.scrollWidth,
+                scrollHeight: document.documentElement.scrollHeight,
+                clientWidth: document.documentElement.clientWidth,
+                clientHeight: document.documentElement.clientHeight
+            });
+            console.log('Computed styles:', {
+                iframeWidth: window.getComputedStyle(iframe).width,
+                iframeHeight: window.getComputedStyle(iframe).height,
+                containerWidth: window.getComputedStyle(container).width,
+                containerHeight: window.getComputedStyle(container).height
+            });
+        }
+
         function resizeReport() {
             const iframe = document.getElementById('reportFrame');
             iframe.style.width = '100%';
             iframe.style.height = '100%';
+            logDimensions('resize');
         }
 
-        // Initial resize
-        window.addEventListener('load', resizeReport);
+        // Log initial page load
+        window.addEventListener('load', () => {
+            logDimensions('initial load');
+            resizeReport();
+        });
         
-        // Handle window resizing
+        // Log after a short delay to catch Power BI loading
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                logDimensions('after 1 second');
+            }, 1000);
+        });
+
+        // Handle window resizing with logging
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(resizeReport, 100);
+            resizeTimeout = setTimeout(() => {
+                resizeReport();
+                logDimensions('after resize');
+            }, 100);
         });
 
-        // Handle orientation changes
-        window.addEventListener('orientationchange', resizeReport);
+        // Log iframe load completion
+        document.getElementById('reportFrame').addEventListener('load', () => {
+            logDimensions('iframe loaded');
+        });
     </script>
 </body>
 </html>
