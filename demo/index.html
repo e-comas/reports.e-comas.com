@@ -1,94 +1,30 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>e-Comas Amazon Analytics</title>
-    <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html, body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Prevent browser scrolling */
-        }
-
-        .report-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow-x: hidden;
-            overflow-y: auto; /* Only container scrolls */
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-        }
-
-        #reportFrame {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 1920px;
-            height: 2160px;
-            border: none;
-            transform-origin: top left;
-            -webkit-transform-origin: top left;
-        }
-    </style>
-</head>
-<body>
-    <div class="report-container">
-        <iframe
-            id="reportFrame"
-            title="e-Comas Comet Demo"
-            src="https://app.powerbi.com/reportEmbed?reportId=5adb444e-14b5-4e35-9754-bd55d0655d66&autoAuth=true&ctid=88b08c41-7f51-4657-9b4a-f8e49a08313e"
-            allowfullscreen>
-        </iframe>
-    </div>
-
+  </head>
+  <body style="padding: 0; margin: 0">
+    <iframe
+      id="reportFrame"
+      title="e-Comas Comet Demo"
+      width="1920"
+      height="2160"
+      src="https://app.powerbi.com/reportEmbed?reportId=5adb444e-14b5-4e35-9754-bd55d0655d66&autoAuth=true&ctid=88b08c41-7f51-4657-9b4a-f8e49a08313e"
+      frameborder="0"
+      allowfullscreen="true">
+    </iframe>
     <script>
-        function resizeReport() {
-            const container = document.querySelector('.report-container');
-            const iframe = document.getElementById('reportFrame');
-            
-            // Calculate scale based on container width
-            const scale = container.clientWidth / 1920;
-            
-            // Apply transform
-            iframe.style.transform = `scale(${scale})`;
-            iframe.style.webkitTransform = `scale(${scale})`; // For Safari
-            
-            // Set minimum height on container to ensure proper scrolling
-            const scaledHeight = Math.ceil(2160 * scale);
-            iframe.style.height = `${2160}px`; // Keep original height
-            
-            console.log('Setup:', {
-                containerWidth: container.clientWidth,
-                scale,
-                scaledHeight
-            });
-        }
-
-        // Call resize when iframe loads
-        document.getElementById('reportFrame').addEventListener('load', resizeReport);
-        
-        // Initial resize
-        window.addEventListener('load', resizeReport);
-        
-        // Debounced resize handler
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(resizeReport, 100);
-        });
+      function makeItFullSize() {
+        var iframe = document.getElementById("reportFrame");
+        iframe.width = window.innerWidth;
+        iframe.height = window.innerHeight;
+      }
+      window.addEventListener("resize", makeItFullSize);
+      document.body.style.overflow = "hidden";
+      makeItFullSize();
     </script>
-</body>
+  </body>
 </html>
