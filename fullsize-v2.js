@@ -1,3 +1,4 @@
+console.log("fullsize.js loaded");
 // Function to resize and position the iframe to cover the entire viewport
 function makeItFullSize() {
   var iframe = document.getElementsByTagName("iframe")[0];
