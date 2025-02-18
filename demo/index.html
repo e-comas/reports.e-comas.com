@@ -6,19 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>e-Comas Amazon Analytics</title>
     <style>
-      /* Remove default margins/padding and hide overflow */
+      /* Remove default margins/padding and ensure full viewport usage */
       html,
       body {
         margin: 0;
         padding: 0;
         overflow: hidden;
+        height: 100%;
+        width: 100%;
+      }
+      /* Style the iframe to always sit at the top-left corner */
+      #reportFrame {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
       }
     </style>
-    <!-- Load the JavaScript file (deferred until after parsing) -->
-    <script src="/fullsize-v2.js" defer></script>
+    <script src="/fullsize.js" defer></script>
   </head>
   <body>
-    <!-- Note: Removed fixed width/height attributes -->
     <iframe
       id="reportFrame"
       title="e-Comas Comet Demo"
