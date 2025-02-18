@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>e-Comas Amazon Analytics</title>
     <style>
-        /* CSS Reset and Base Styles */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -20,21 +19,19 @@
             position: fixed;
         }
 
-        /* Container for maintaining aspect ratio */
         .report-container {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
         }
 
         #reportFrame {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             border: none;
@@ -53,27 +50,9 @@
 
     <script>
         function resizeReport() {
-            const container = document.querySelector('.report-container');
             const iframe = document.getElementById('reportFrame');
-            const aspectRatio = 1920 / 2160; // Your report's aspect ratio
-            
-            const containerWidth = container.clientWidth;
-            const containerHeight = container.clientHeight;
-            const containerRatio = containerWidth / containerHeight;
-            
-            if (containerRatio > aspectRatio) {
-                // Container is wider than needed
-                const height = containerHeight;
-                const width = height * aspectRatio;
-                iframe.style.width = `${width}px`;
-                iframe.style.height = '100%';
-            } else {
-                // Container is taller than needed
-                const width = containerWidth;
-                const height = width / aspectRatio;
-                iframe.style.width = '100%';
-                iframe.style.height = `${height}px`;
-            }
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
         }
 
         // Initial resize
@@ -82,12 +61,11 @@
         // Handle window resizing
         let resizeTimeout;
         window.addEventListener('resize', () => {
-            // Debounce resize events
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(resizeReport, 100);
         });
 
-        // Handle orientation changes on mobile devices
+        // Handle orientation changes
         window.addEventListener('orientationchange', resizeReport);
     </script>
 </body>
