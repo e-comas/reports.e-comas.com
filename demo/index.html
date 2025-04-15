@@ -3,63 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>e-Comas Amazon Analytics</title>
-    <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="/fullsize.js" defer async></script>
   </head>
   <body style="padding: 0; margin: 0">
     <iframe
-      id="reportFrame"
-      title="e-Comas Comet Demo"
+      title="e-Comas_Amazon_Analytics_SC_Production"
       width="1140"
       height="541.25"
-      src="https://app.powerbi.com/reportEmbed?reportId=4cc10caf-e9dd-4030-b7ba-e037bee3dd8b&autoAuth=true&ctid=88b08c41-7f51-4657-9b4a-f8e49a08313e"
+      src="https://app.powerbi.com/reportEmbed?reportId=8572216b-a136-40ad-9932-9decabc5889e&autoAuth=true&ctid=88b08c41-7f51-4657-9b4a-f8e49a08313e"
       frameborder="0"
-      allowfullscreen="true">
-    </iframe>
-    <script>
-      // SVG logo as base64
-      const logoSvg = `
-        <svg width="200" height="50" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20,10 h160 a10,10 0 0 1 10,10 v10 a10,10 0 0 1 -10,10 h-160 a10,10 0 0 1 -10,-10 v-10 a10,10 0 0 1 10,-10 z" 
-                fill="#48E5C2"/>
-          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
-                fill="#fff" style="font-family: Arial, sans-serif; font-size: 20px;">
-            e-Comas
-          </text>
-        </svg>
-      `;
-      const logoUrl = 'data:image/svg+xml;base64,' + btoa(logoSvg);
-
-      // Original resize function
-      function makeItFullSize() {
-        var iframe = document.getElementById("reportFrame");
-        iframe.width = window.innerWidth;
-        iframe.height = window.innerHeight;
-      }
-      
-      window.addEventListener("resize", makeItFullSize);
-      document.body.style.overflow = "hidden";
-      makeItFullSize();
-
-      // Add PowerBI custom logo once iframe is loaded
-      document.getElementById("reportFrame").addEventListener('load', function() {
-        const report = powerbi.embed(this, {
-          type: 'report',
-          tokenType: 'Embed',
-          embedUrl: this.src,
-          settings: {
-            customLayout: {
-              displayOption: powerbi.models.DisplayOption.FitToWidth
-            },
-            loadingLogoCustom: {
-              imageUrl: logoUrl,
-              width: 200,
-              height: 50
-            }
-          }
-        });
-      });
-    </script>
+      allowfullscreen="true"
+    ></iframe>
   </body>
 </html>
