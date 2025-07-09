@@ -1,0 +1,4 @@
+[submodule "amazon-eu-penetration"]
+	path = amazon-eu-penetration
+	url = https://github.com/e-comas/amazon-eu-penetration
+	branch = gh-pages
